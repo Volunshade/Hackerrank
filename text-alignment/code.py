@@ -1,112 +1,150 @@
 """Module will create a graphic using the letter H."""
 
 
-def top_cone(thickness, letter):
-    """Create the top cone of the graphic."""
+class Graphic:
+    """Representation of an ASCII letter graphic."""
 
-    width = thickness - 1
+    def __init__(self, thickness: int, letter: str) -> None:
+        """Initialize a Graphic type instance."""
 
-    layers = []
-    for index in range(thickness):
-        thick = letter * index
-        right = thick.rjust(width)
-        left = thick.ljust(width)
+        self.thickness = thickness
+        self.letter = letter
 
-        layer = right + letter + left
-        layers.append(layer)
+        self.less_thick = thickness - 1
+        self.more_thick = thickness + 1
+        self.half_thick = self.more_thick // 2
 
-    string = "\n".join(layers)
+        self.left_thick = thickness * 2
+        self.right_thick = thickness * 6
 
-    return string
+        self.letters = letter * thickness
+        self.middle_letters = self.letters * 5
 
+        self.parts = (
+            self.upper_top(),
+            self.upper_mid(),
+            self.middle(),
+            self.lower_mid(),
+            self.lower_bot()
+        )
 
-def top_pillar(thickness, letter):
-    """Create the top pillar of the graphic."""
+    def __len__(self):
+        """Representation of Graphic type instance length."""
 
-    width = thickness * 2
-    height = thickness * 6
+        return len(self.parts)
 
-    layers = []
-    for _ in range(thickness + 1):
-        letters = letter * thickness
+    def __iter__(self):
+        """Representation of Graphic type instance iterable."""
 
-        layer = letters.center(width) + letters.center(height)
-        layers.append(layer)
+        for part in self.parts:
+            yield part
 
-    string = "\n".join(layers)
+    def __str__(self):
+        """Representation of Graphic type instance string."""
 
-    return string
+        return "\n".join(self)
 
+    def upper_top(self):
+        """Create the top cone of the graphic."""
 
-def mid_belt(thickness, letter):
-    """Create the middle of the graphic"""
+        # number of iterations
+        loop_count = self.thickness
 
-    width = thickness * 6
+        layers = []
+        for index in range(loop_count):
 
-    layers = []
-    for _ in range((thickness+1)//2):
-        letters = letter * thickness * 5
+            # graphic layer data
+            thick = self.letter * index
+            right = thick.rjust(self.less_thick)
+            left = thick.ljust(self.less_thick)
+            layer = right + self.letter + left
 
-        layer = letters.center(width)
-        layers.append(layer)
+            layers.append(layer)
 
-    string = "\n".join(layers)
+        string = "\n".join(layers)
 
-    return string
+        return string
 
+    def upper_mid(self):
+        """Create the top pillar of the graphic."""
 
-def bot_pillar(thickness, letter):
-    """Create the bottom pillar of the graphic"""
+        # number of iterations
+        loop_count = self.more_thick
 
-    width = thickness * 2
-    height = thickness * 6
+        layers = []
+        for _ in range(loop_count):
 
-    layers = []
-    for _ in range(thickness + 1):
-        letters = letter * thickness
+            # graphic layer data
+            left = self.letters.center(self.left_thick)
+            right = self.letters.center(self.right_thick)
+            layer = left + right
 
-        layer = letters.center(width) + letters.center(height)
-        layers.append(layer)
+            layers.append(layer)
 
-    string = "\n".join(layers)
+        string = "\n".join(layers)
 
-    return string
+        return string
 
+    def middle(self):
+        """Create the middle of the graphic"""
 
-def bot_cone(thickness, letter):
-    """Create the bottom cone of the graphic"""
+        # number of iterations
+        loop_count = self.half_thick
 
-    height = thickness * 6
+        layers = []
+        for _ in range(loop_count):
 
-    layers = []
-    for index in range(thickness):
-        width = thickness - index - 1
-        letters = letter * width
-        right = letters.rjust(thickness)
-        left = letters.ljust(thickness)
-        botcone = right + letter + left
+            # graphic layer data
+            layer = self.middle_letters.center(self.right_thick)
 
-        layer = botcone.rjust(height)
-        layers.append(layer)
+            layers.append(layer)
 
-    string = "\n".join(layers)
+        string = "\n".join(layers)
 
-    return string
+        return string
 
+    def lower_mid(self):
+        """Create the bottom pillar of the graphic"""
 
-def draw(thickness, letter):
-    """Create the graphics based on the parts"""
+        # number of iterations
+        loop_count = self.more_thick
 
-    parts = [
-        top_cone(thickness, letter),
-        top_pillar(thickness, letter),
-        mid_belt(thickness, letter),
-        bot_pillar(thickness, letter),
-        bot_cone(thickness, letter)
-    ]
-    string = "\n".join(parts)
+        layers = []
+        for _ in range(loop_count):
 
-    print(string)
+            # graphic layer data
+            left = self.letters.center(self.left_thick)
+            right = self.letters.center(self.right_thick)
+            layer = left + right
+
+            layers.append(layer)
+
+        string = "\n".join(layers)
+
+        return string
+
+    def lower_bot(self):
+        """Create the bottom cone of the graphic"""
+
+        # number of iterations
+        loop_count = self.thickness
+
+        layers = []
+        for index in range(loop_count):
+
+            # graphic layer data
+            width = self.less_thick - index
+            letters = self.letter * width
+            left = letters.rjust(self.thickness)
+            right = letters.ljust(self.thickness)
+            layer_raw = left + self.letter + right
+            layer = layer_raw.rjust(self.right_thick)
+
+            layers.append(layer)
+
+        string = "\n".join(layers)
+
+        return string
 
 
 def main():
@@ -115,7 +153,8 @@ def main():
     thickness = int(input())
     letter = "H"
 
-    draw(thickness, letter)
+    graphic = Graphic(thickness, letter)
+    print(graphic)
 
 
 if __name__ == '__main__':
